@@ -5,18 +5,27 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 5
+      ZOOKEEPER_INIT_LIMIT: 10
     ports:
       - "2181:2181"
     volumes:
       - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_datalog:/var/lib/zookeeper/log
     networks:
       - operix-network
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: operix-kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - "9092:9092"
       - "9093:9093"
@@ -30,6 +39,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_AUTO_LEADER_REBALANCE_ENABLE: "true"
       KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 18000
+      KAFKA_BROKER_RACK: rack-1
     volumes:
       - kafka_data:/var/lib/kafka/data
     entrypoint: >
@@ -42,8 +52,10 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+      start_period: 15s
     networks:
       - operix-network
+    restart: unless-stopped
 
   postgres:
     image: postgres:16
@@ -234,4 +246,5 @@ networks:
 volumes:
   postgres_data:
   zookeeper_data:
+  zookeeper_datalog:
   kafka_data:
