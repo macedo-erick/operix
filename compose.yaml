@@ -79,6 +79,7 @@ services:
   service-registry:
     build:
       context: ./service-registry
+    image: operix/service-registry:prod
     container_name: service-registry
     environment:
       SERVER_PORT: 8761
@@ -96,6 +97,7 @@ services:
   config-server:
     build:
       context: ./config-server
+    image: operix/config-server:prod
     container_name: config-server
     environment:
       SERVER_PORT: 8888
@@ -115,6 +117,7 @@ services:
       context: ./api-gateway
       args:
         APP_PORT: 8080
+    image: operix/api-gateway:prod
     container_name: api-gateway
     environment:
       SERVER_PORT: 8080
@@ -142,6 +145,7 @@ services:
       context: ./inventory-service
       args:
         APP_PORT: 8081
+    image: operix/inventory-service:prod
     container_name: inventory-service
     environment:
       SERVER_PORT: 8081
@@ -177,6 +181,7 @@ services:
       context: ./people-service
       args:
         APP_PORT: 8082
+    image: operix/people-service:prod
     container_name: people-service
     environment:
       SERVER_PORT: 8082
@@ -212,6 +217,7 @@ services:
       context: ./product-service
       args:
         APP_PORT: 8081
+    image: operix/product-service:prod
     container_name: product-service
     environment:
       SERVER_PORT: 8081

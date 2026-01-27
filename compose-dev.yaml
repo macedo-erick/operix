@@ -80,6 +80,7 @@ services:
     build:
       context: ./service-registry
       dockerfile: Dockerfile.dev
+    image: operix/service-registry:dev
     container_name: service-registry
     environment:
       SERVER_PORT: 8761
@@ -100,6 +101,7 @@ services:
     build:
       context: ./config-server
       dockerfile: Dockerfile.dev
+    image: operix/config-server:dev
     container_name: config-server
     environment:
       SERVER_PORT: 8888
@@ -120,6 +122,7 @@ services:
     build:
       context: ./api-gateway
       dockerfile: Dockerfile.dev
+    image: operix/api-gateway:dev
     container_name: api-gateway
     environment:
       SERVER_PORT: 8080
@@ -146,6 +149,7 @@ services:
     build:
       context: ./inventory-service
       dockerfile: Dockerfile.dev
+    image: operix/inventory-service:dev
     container_name: inventory-service
     environment:
       SERVER_PORT: 8081
@@ -168,12 +172,19 @@ services:
         condition: service_healthy
     networks:
       - operix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
   people-service:
     build:
       context: ./people-service
       dockerfile: Dockerfile.dev
+    image: operix/people-service:dev
     container_name: people-service
     environment:
       SERVER_PORT: 8082
@@ -196,12 +207,19 @@ services:
         condition: service_healthy
     networks:
       - operix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
   product-service:
     build:
       context: ./product-service
       dockerfile: Dockerfile.dev
+    image: operix/product-service:dev
     container_name: product-service
     environment:
       SERVER_PORT: 8083
@@ -224,6 +242,12 @@ services:
         condition: service_healthy
     networks:
       - operix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
 networks:
