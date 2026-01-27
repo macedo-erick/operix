@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Service
-@NoArgsConstructor
 public class ProductService {
 
     private ProductRepository productRepository;

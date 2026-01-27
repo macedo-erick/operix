@@ -119,6 +119,7 @@ services:
     environment:
       SERVER_PORT: 8080
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
       - "8080:8080"
     volumes:
@@ -184,6 +185,7 @@ services:
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
       - "8082:8082"
     volumes:
@@ -209,17 +211,18 @@ services:
     build:
       context: ./product-service
       args:
-        APP_PORT: 8083
+        APP_PORT: 8081
     container_name: product-service
     environment:
-      SERVER_PORT: 8083
+      SERVER_PORT: 8081
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
-      - "8083:8083"
+      - "8081:8081"
     volumes:
       - ./product-service/src:/app/src
       - ./product-service/build/classes:/app/build/classes
@@ -231,7 +234,7 @@ services:
       kafka:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5

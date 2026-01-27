@@ -8,20 +8,14 @@ spring:
           uri: http://product-service:8081
           predicates:
             - Path=/api/products/**
-          filters:
-            - StripPrefix=1
         - id: people-service
           uri: http://people-service:8082
           predicates:
             - Path=/api/people/**
-          filters:
-            - StripPrefix=1
         - id: inventory-service
           uri: http://inventory-service:8083
           predicates:
             - Path=/api/inventory/**
-          filters:
-            - StripPrefix=1
 
 server:
   port: 8080
