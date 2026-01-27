@@ -98,6 +98,32 @@ services:
       retries: 5
     restart: unless-stopped
 
+  api-gateway:
+    build:
+      context: ./api-gateway
+      args:
+        APP_PORT: 8080
+    container_name: api-gateway
+    environment:
+      SERVER_PORT: 8080
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api-gateway/src:/app/src
+      - ./api-gateway/build/classes:/app/build/classes
+    depends_on:
+      config-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - operix-network
+    restart: unless-stopped
+
   inventory-service:
     build:
       context: ./inventory-service

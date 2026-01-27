@@ -54,8 +54,12 @@ docker-compose up -d
 
 This will start all microservices along with MySQL, Kafka, and Zookeeper.
 
-### Service Endpoints
+### API Gateway & Centralized Swagger UI
 
+**Centralized API Documentation:**
+```
+
+**Direct Service Access:**
 - Service Registry: http://localhost:8761
 - Config Server: http://localhost:8888
 - Inventory Service: http://localhost:8081
@@ -82,12 +86,6 @@ cd inventory-service
 
 ### Running Services Locally
 
-Each service can be run independently with the appropriate environment variables set for database and Kafka connections.
-
-## Project Structure
-
-```
-operix/
 ├── config-server/       # Configuration server
 ├── service-registry/    # Eureka service registry
 ├── inventory-service/   # Inventory management
