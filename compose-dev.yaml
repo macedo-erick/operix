@@ -1,0 +1,231 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: operix-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 5
+      ZOOKEEPER_INIT_LIMIT: 10
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_datalog:/var/lib/zookeeper/log
+    networks:
+      - operix-network
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: operix-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_AUTO_LEADER_REBALANCE_ENABLE: "true"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 18000
+      KAFKA_BROKER_RACK: rack-1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    entrypoint: >
+      sh -c "
+      rm -f /var/lib/kafka/data/meta.properties &&
+      /etc/confluent/docker/run
+      "
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+    networks:
+      - operix-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    container_name: operix-postgres
+    environment:
+      POSTGRES_DB: operix
+      POSTGRES_USER: operix_user
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U operix_user -d operix"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - operix-network
+
+  service-registry:
+    build:
+      context: ./service-registry
+      dockerfile: Dockerfile.dev
+    container_name: service-registry
+    environment:
+      SERVER_PORT: 8761
+    ports:
+      - "8761:8761"
+    volumes:
+      - ./service-registry/src:/app/src
+    networks:
+      - operix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile.dev
+    container_name: config-server
+    environment:
+      SERVER_PORT: 8888
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./config-server/src:/app/src
+    networks:
+      - operix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile.dev
+    container_name: api-gateway
+    environment:
+      SERVER_PORT: 8080
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api-gateway/src:/app/src
+    depends_on:
+      config-server:
+        condition: service_healthy
+    networks:
+      - operix-network
+    restart: unless-stopped
+
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile.dev
+    container_name: inventory-service
+    environment:
+      SERVER_PORT: 8081
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
+      SPRING_DATASOURCE_USERNAME: operix_user
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./inventory-service/src:/app/src
+    depends_on:
+      config-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - operix-network
+    restart: unless-stopped
+
+  people-service:
+    build:
+      context: ./people-service
+      dockerfile: Dockerfile.dev
+    container_name: people-service
+    environment:
+      SERVER_PORT: 8082
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
+      SPRING_DATASOURCE_USERNAME: operix_user
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./people-service/src:/app/src
+    depends_on:
+      config-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - operix-network
+    restart: unless-stopped
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile.dev
+    container_name: product-service
+    environment:
+      SERVER_PORT: 8081
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
+      SPRING_DATASOURCE_USERNAME: operix_user
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./product-service/src:/app/src
+    depends_on:
+      config-server:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - operix-network
+    restart: unless-stopped
+
+networks:
+  operix-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  zookeeper_data:
+  zookeeper_datalog:
+  kafka_data:

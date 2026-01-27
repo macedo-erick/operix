@@ -1,0 +1,23 @@
+# Development Dockerfile - runs gradle bootRun with hot-reload
+FROM eclipse-temurin:21-jdk-alpine
+
+# Install curl for health checks and bash
+RUN apk add --no-cache curl bash
+
+WORKDIR /app
+
+# Copy gradle wrapper and build files
+COPY gradlew settings.gradle build.gradle ./
+COPY gradle ./gradle
+
+# Make gradlew executable
+RUN chmod +x gradlew
+
+# Download dependencies once (layer caching)
+RUN ./gradlew dependencies --no-daemon || true
+
+# Source code will be mounted as volume at runtime
+EXPOSE 8082
+
+# Run Spring Boot with DevTools enabled
+CMD ["./gradlew", "bootRun", "--no-daemon", "-Dspring.devtools.restart.enabled=true"]
