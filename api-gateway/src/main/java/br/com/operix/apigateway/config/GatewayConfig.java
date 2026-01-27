@@ -12,6 +12,7 @@ public class GatewayConfig {
         return GroupedOpenApi.builder()
                 .group("product-service")
                 .displayName("Product Service")
+                .pathsToMatch("/api/products/**")
                 .build();
     }
 
@@ -20,6 +21,7 @@ public class GatewayConfig {
         return GroupedOpenApi.builder()
                 .group("people-service")
                 .displayName("People Service")
+                .pathsToMatch("/api/people/**")
                 .build();
     }
 
@@ -28,6 +30,7 @@ public class GatewayConfig {
         return GroupedOpenApi.builder()
                 .group("inventory-service")
                 .displayName("Inventory Service")
+                .pathsToMatch("/api/inventory/**")
                 .build();
     }
 }
