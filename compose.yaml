@@ -36,20 +36,19 @@ services:
     networks:
       - operix-network
 
-  mysql:
-    image: mysql:8.0
-    container_name: operix-mysql
+  postgres:
+    image: postgres:16
+    container_name: operix-postgres
     environment:
-      MYSQL_ROOT_PASSWORD: verysecret
-      MYSQL_DATABASE: operix_db
-      MYSQL_USER: operix_user
-      MYSQL_PASSWORD: secret
+      POSTGRES_DB: operix
+      POSTGRES_USER: operix_user
+      POSTGRES_PASSWORD: secret
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U operix_user -d operix"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -99,7 +98,7 @@ services:
     environment:
       SERVER_PORT: 8081
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/operix_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
@@ -108,7 +107,7 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
-      mysql:
+      postgres:
         condition: service_healthy
       kafka:
         condition: service_healthy
@@ -130,7 +129,7 @@ services:
     environment:
       SERVER_PORT: 8082
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/operix_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
@@ -139,7 +138,7 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
-      mysql:
+      postgres:
         condition: service_healthy
       kafka:
         condition: service_healthy
@@ -161,7 +160,7 @@ services:
     environment:
       SERVER_PORT: 8083
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/operix_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
@@ -170,7 +169,7 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
-      mysql:
+      postgres:
         condition: service_healthy
       kafka:
         condition: service_healthy
@@ -188,5 +187,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
+  postgres_data:
   kafka_data:
