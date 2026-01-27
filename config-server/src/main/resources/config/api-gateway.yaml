@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: product-service
+          uri: http://product-service:8081
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - StripPrefix=1
+        - id: people-service
+          uri: http://people-service:8082
+          predicates:
+            - Path=/api/people/**
+          filters:
+            - StripPrefix=1
+        - id: inventory-service
+          uri: http://inventory-service:8083
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - StripPrefix=1
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true

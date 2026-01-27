@@ -3,3 +3,10 @@ spring:
     name: product-service
   config:
     import: "optional:configserver:http://localhost:8888"
+
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+

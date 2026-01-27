@@ -3,3 +3,28 @@ spring:
     name: api-gateway
   config:
     import: optional:configserver:http://localhost:8888
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: Product Service
+        url: http://localhost:8081/v3/api-docs
+      - name: People Service
+        url: http://localhost:8082/v3/api-docs
+      - name: Inventory Service
+        url: http://localhost:8083/v3/api-docs
+  api-docs:
+    path: /v3/api-docs
+  enable-spring-security: false
+  show-actuator: false
+  use-fqn: true
+  group-configs:
+    - group: Product APIs
+      paths-to-match: /api/products/**
+    - group: People APIs
+      paths-to-match: /api/people/**
+    - group: Inventory APIs
+      paths-to-match: /api/inventory/**
+
