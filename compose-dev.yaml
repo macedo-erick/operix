@@ -134,6 +134,12 @@ services:
         condition: service_healthy
     networks:
       - operix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health/liveness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
   inventory-service:
@@ -198,7 +204,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: product-service
     environment:
-      SERVER_PORT: 8081
+      SERVER_PORT: 8083
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/operix
       SPRING_DATASOURCE_USERNAME: operix_user
@@ -206,7 +212,7 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
-      - "8081:8081"
+      - "8083:8083"
     volumes:
       - ./product-service/src:/app/src
     depends_on:

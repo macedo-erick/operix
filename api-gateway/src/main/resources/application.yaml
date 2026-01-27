@@ -7,7 +7,7 @@ spring:
     gateway:
       routes:
         - id: product-service
-          uri: http://localhost:8081
+          uri: http://localhost:8083
           predicates:
             - Path=/api/products/**
         - id: people-service
@@ -15,7 +15,7 @@ spring:
           predicates:
             - Path=/api/people/**
         - id: inventory-service
-          uri: http://localhost:8083
+          uri: http://localhost:8081
           predicates:
             - Path=/api/inventory/**
 
