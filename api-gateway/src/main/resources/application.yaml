@@ -3,10 +3,31 @@ spring:
     name: api-gateway
   config:
     import: optional:configserver:http://localhost:8888
+  cloud:
+    gateway:
+      routes:
+        - id: product-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/products/**
+        - id: people-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/people/**
+        - id: inventory-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/inventory/**
 
 springdoc:
   swagger-ui:
     enabled: true
+    use-root-path: true
   api-docs:
     path: /v3/api-docs
+  swagger-ui:
+    urls-primary-name: api-gateway
+  enable-spring-security: false
+  spring-cloud:
+    enabled: true
 
