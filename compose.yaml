@@ -76,6 +76,7 @@ services:
       - operix-network
 
   service-registry:
+    user: "${HOST_UID}:${HOST_GID}"
     build:
       context: ./service-registry
     image: operix/service-registry:prod
@@ -93,6 +94,7 @@ services:
       retries: 5
 
   config-server:
+    user: "${HOST_UID}:${HOST_GID}"
     build:
       context: ./config-server
     image: operix/config-server:prod
@@ -110,6 +112,7 @@ services:
       retries: 5
 
   api-gateway:
+    user: "${HOST_UID}:${HOST_GID}"
     build:
       context: ./api-gateway
       args:
@@ -133,6 +136,7 @@ services:
       - operix-network
 
   inventory-service:
+    user: "${HOST_UID}:${HOST_GID}"
     build:
       context: ./inventory-service
       args:
@@ -164,6 +168,7 @@ services:
       - operix-network
 
   people-service:
+    user: "${HOST_UID}:${HOST_GID}"
     build:
       context: ./people-service
       args:
@@ -195,6 +200,7 @@ services:
       - operix-network
 
   product-service:
+    user: "${HOST_UID}:${HOST_GID}"
     build:
       context: ./product-service
       args:

@@ -6,6 +6,9 @@ RUN apk add --no-cache curl bash
 
 WORKDIR /app
 
+# Keep Gradle caches in a writable location when running as non-root
+ENV GRADLE_USER_HOME=/app/.gradle
+
 # Copy gradle wrapper and build files
 COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle
@@ -20,4 +23,4 @@ RUN ./gradlew dependencies --no-daemon || true
 EXPOSE 8761
 
 # Run Spring Boot with DevTools enabled
-CMD ["./gradlew", "bootRun", "--no-daemon", "-Dspring.devtools.restart.enabled=true"]
+CMD ["./gradlew", "bootRun", "--no-daemon", "--continuous", "-Dspring.devtools.restart.enabled=true"]
