@@ -12,6 +12,15 @@ spring:
     livereload:
       enabled: true
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
 springdoc:
   swagger-ui:
     enabled: true

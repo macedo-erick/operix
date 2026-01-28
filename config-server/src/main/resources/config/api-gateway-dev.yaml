@@ -5,10 +5,21 @@ spring:
     livereload:
       enabled: true
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
 springdoc:
+  api-docs:
+    enabled: false
   swagger-ui:
     enabled: true
-    use-root-path: true
+    path: /swagger-ui.html
     urls:
       - name: product-service
         url: /openapi/product-service/v3/api-docs
@@ -16,8 +27,6 @@ springdoc:
         url: /openapi/people-service/v3/api-docs
       - name: inventory-service
         url: /openapi/inventory-service/v3/api-docs
-  api-docs:
-    path: /v3/api-docs
   enable-spring-security: false
   spring-cloud:
-    enabled: true
+    enabled: false

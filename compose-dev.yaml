@@ -108,7 +108,7 @@ services:
     container_name: config-server
     environment:
       SERVER_PORT: 8888
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: native
     ports:
       - "8888:8888"
     volumes:
@@ -144,6 +144,8 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+      service-registry:
+        condition: service_healthy
     networks:
       - operix-network
     healthcheck:
@@ -177,6 +179,8 @@ services:
       - ./inventory-service/build/resources:/app/build/resources
     depends_on:
       config-server:
+        condition: service_healthy
+      service-registry:
         condition: service_healthy
       postgres:
         condition: service_healthy
@@ -216,6 +220,8 @@ services:
     depends_on:
       config-server:
         condition: service_healthy
+      service-registry:
+        condition: service_healthy
       postgres:
         condition: service_healthy
       kafka:
@@ -253,6 +259,8 @@ services:
       - ./product-service/build/resources:/app/build/resources
     depends_on:
       config-server:
+        condition: service_healthy
+      service-registry:
         condition: service_healthy
       postgres:
         condition: service_healthy

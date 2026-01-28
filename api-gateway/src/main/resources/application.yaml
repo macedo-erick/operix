@@ -7,32 +7,44 @@ spring:
     gateway:
       routes:
         - id: product-service
-          uri: http://localhost:8083
+          uri: lb://product-service
           predicates:
             - Path=/api/products/**
         - id: people-service
-          uri: http://localhost:8082
+          uri: lb://people-service
           predicates:
             - Path=/api/people/**
         - id: inventory-service
-          uri: http://localhost:8081
+          uri: lb://inventory-service
           predicates:
             - Path=/api/inventory/**
         - id: product-service-openapi
-          uri: http://localhost:8083
+          uri: lb://product-service
           predicates:
             - Path=/openapi/product-service/**
           filters:
             - StripPrefix=2
         - id: people-service-openapi
-          uri: http://localhost:8082
+          uri: lb://people-service
           predicates:
             - Path=/openapi/people-service/**
           filters:
             - StripPrefix=2
         - id: inventory-service-openapi
-          uri: http://localhost:8081
+          uri: lb://inventory-service
           predicates:
             - Path=/openapi/inventory-service/**
           filters:
             - StripPrefix=2
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web: DEBUG

@@ -2,6 +2,7 @@ spring:
   application:
     name: people-service
 
+
 server:
   port: 8082
 

@@ -1,36 +1,28 @@
 package br.com.operix.apigateway.config;
 
-import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 @Configuration
 public class GatewayConfig {
 
-    @Bean
-    public GroupedOpenApi productServiceApi() {
-        return GroupedOpenApi.builder()
-                .group("product-service")
-                .displayName("Product Service")
-                .pathsToMatch("/api/products/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi peopleServiceApi() {
-        return GroupedOpenApi.builder()
-                .group("people-service")
-                .displayName("People Service")
-                .pathsToMatch("/api/people/**")
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi inventoryServiceApi() {
-        return GroupedOpenApi.builder()
-                .group("inventory-service")
-                .displayName("Inventory Service")
-                .pathsToMatch("/api/inventory/**")
-                .build();
-    }
+//    @Bean
+//    public RouterFunction<ServerResponse> productServiceRoute() {
+//        return route("product-service")
+//                .route(path("/api/products/**"), HandlerFunctions.http())
+//                .filter(lb("product-service"))
+//                .build();
+//    }
+//    @Bean
+//    public RouterFunction<ServerResponse> peopleServiceRoute() {
+//        return route("people-service")
+//                .route(path("/api/people/**"), HandlerFunctions.http())
+//                .filter(lb("people-service"))
+//                .build();
+//    }
+//    @Bean
+//    public RouterFunction<ServerResponse> inventoryServiceRoute() {
+//        return route("inventory-service")
+//                .route(path("/api/inventory/**"), HandlerFunctions.http())
+//                .filter(lb("inventory-service"))
+//                .build();
+//    }
 }
