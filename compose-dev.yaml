@@ -84,6 +84,7 @@ services:
     container_name: service-registry
     environment:
       SERVER_PORT: 8761
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8761:8761"
     volumes:
@@ -107,6 +108,7 @@ services:
     container_name: config-server
     environment:
       SERVER_PORT: 8888
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8888:8888"
     volumes:
