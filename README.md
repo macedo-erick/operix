@@ -158,7 +158,6 @@ operix/
 ├── product-service/     # Product management microservice
 ├── compose.yaml         # Production Docker Compose
 ├── compose-dev.yaml     # Development Docker Compose (hot reload)
-└── HOT_RELOAD_GUIDE.md  # Development guide
 ```
 
 ## Purpose
