@@ -6,7 +6,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +22,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class Category {
 
     @Id
     private UUID id;
@@ -32,12 +31,7 @@ public class Product {
 
     private String description;
 
-    private Double price;
-
     private boolean available;
-
-    @OneToOne
-    private Category category;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
