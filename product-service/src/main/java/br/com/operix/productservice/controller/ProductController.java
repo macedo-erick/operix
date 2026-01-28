@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
-@Tag(name = "Products", description = "Endpoints para gerenciamento de produtos")
+@Tag(name = "Products", description = "Product management endpoints")
 public class ProductController {
 
     private final ProductService productService;
@@ -30,22 +30,22 @@ public class ProductController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar produtos", description = "Retorna uma lista paginada de produtos")
+    @Operation(summary = "List products", description = "Returns a paginated list of products")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de produtos retornada com sucesso")
+            @ApiResponse(responseCode = "200", description = "Product list returned successfully")
     })
     public ResponseEntity<Page<Product>> findAll(Pageable pageable) {
         return ResponseEntity.ok(productService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar produto por ID", description = "Retorna um produto específico pelo seu ID")
+    @Operation(summary = "Get product by ID", description = "Returns a specific product by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Produto encontrado"),
-            @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+            @ApiResponse(responseCode = "200", description = "Product found"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
     })
     public ResponseEntity<Product> findById(
-            @Parameter(description = "ID do produto", required = true)
+            @Parameter(description = "Product ID", required = true)
             @PathVariable UUID id) throws HttpException {
         return ResponseEntity.ok(productService.findById(id));
     }

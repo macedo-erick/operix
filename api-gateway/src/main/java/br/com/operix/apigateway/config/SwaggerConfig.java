@@ -13,7 +13,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Operix API Gateway")
-                        .description("Agregação de APIs dos microsserviços")
+                        .description("Microservices API Aggregation")
                         .version("1.0.0"));
     }
 }

@@ -20,7 +20,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("People Service API")
-                        .description("API para gerenciamento de pessoas")
+                        .description("People management API")
                         .version("1.0.0"))
                 .servers(List.of(server));
     }
