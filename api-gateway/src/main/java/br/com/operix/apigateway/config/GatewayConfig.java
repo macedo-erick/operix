@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerResponse;
 
+import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.stripPrefix;
 import static org.springframework.cloud.gateway.server.mvc.filter.LoadBalancerFilterFunctions.lb;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 import static org.springframework.web.servlet.function.RequestPredicates.path;
@@ -20,6 +21,7 @@ public class GatewayConfig {
                 .filter(lb("product-service"))
                 .build();
     }
+
     @Bean
     public RouterFunction<ServerResponse> peopleServiceRoute() {
         return route("people-service")
@@ -27,10 +29,38 @@ public class GatewayConfig {
                 .filter(lb("people-service"))
                 .build();
     }
+
     @Bean
     public RouterFunction<ServerResponse> inventoryServiceRoute() {
         return route("inventory-service")
                 .route(path("/api/inventory/**"), HandlerFunctions.http())
+                .filter(lb("inventory-service"))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> productServiceSwaggerRoute() {
+        return route("product-service-swagger")
+                .route(path("/product-service/v3/api-docs"), HandlerFunctions.http())
+                .before(stripPrefix(1))
+                .filter(lb("product-service"))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> peopleServiceSwaggerRoute() {
+        return route("people-service-swagger")
+                .route(path("/people-service/v3/api-docs"), HandlerFunctions.http())
+                .before(stripPrefix(1))
+                .filter(lb("people-service"))
+                .build();
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> inventoryServiceSwaggerRoute() {
+        return route("inventory-service-swagger")
+                .route(path("/inventory-service/v3/api-docs"), HandlerFunctions.http())
+                .before(stripPrefix(1))
                 .filter(lb("inventory-service"))
                 .build();
     }

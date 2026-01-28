@@ -1,4 +1,4 @@
-package br.com.operix.apigateway.config;
+package br.com.operix.productservice.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -6,14 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class SwaggerConfig {
+public class OpenApiConfig {
 
     @Bean
-    public OpenAPI apiGatewayOpenAPI() {
+    public OpenAPI productServiceOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Operix API Gateway")
-                        .description("Agregação de APIs dos microsserviços")
+                        .title("Product Service API")
+                        .description("API para gerenciamento de produtos")
                         .version("1.0.0"));
     }
 }

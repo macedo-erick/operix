@@ -4,6 +4,20 @@ spring:
 
 server:
   port: 8080
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: product-service
+        url: /product-service/v3/api-docs
+      - name: people-service
+        url: /people-service/v3/api-docs
+      - name: inventory-service
+        url: /inventory-service/v3/api-docs
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+
 management:
   endpoints:
     web:

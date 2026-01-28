@@ -13,20 +13,3 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
-
-springdoc:
-  api-docs:
-    enabled: false
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-    urls:
-      - name: product-service
-        url: /openapi/product-service/v3/api-docs
-      - name: people-service
-        url: /openapi/people-service/v3/api-docs
-      - name: inventory-service
-        url: /openapi/inventory-service/v3/api-docs
-  enable-spring-security: false
-  spring-cloud:
-    enabled: false
