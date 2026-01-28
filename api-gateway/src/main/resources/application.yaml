@@ -3,11 +3,6 @@ spring:
     name: api-gateway
   config:
     import: optional:configserver:http://localhost:8888
-  devtools:
-    restart:
-      enabled: true
-    livereload:
-      enabled: true
   cloud:
     gateway:
       routes:
@@ -23,20 +18,21 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/api/inventory/**
-
-springdoc:
-  swagger-ui:
-    enabled: true
-    use-root-path: true
-    urls:
-      - name: product-service
-        url: http://localhost:8083/v3/api-docs
-      - name: people-service
-        url: http://localhost:8082/v3/api-docs
-      - name: inventory-service
-        url: http://localhost:8081/v3/api-docs
-  api-docs:
-    path: /v3/api-docs
-  enable-spring-security: false
-  spring-cloud:
-    enabled: true
+        - id: product-service-openapi
+          uri: http://localhost:8083
+          predicates:
+            - Path=/openapi/product-service/**
+          filters:
+            - StripPrefix=2
+        - id: people-service-openapi
+          uri: http://localhost:8082
+          predicates:
+            - Path=/openapi/people-service/**
+          filters:
+            - StripPrefix=2
+        - id: inventory-service-openapi
+          uri: http://localhost:8081
+          predicates:
+            - Path=/openapi/inventory-service/**
+          filters:
+            - StripPrefix=2

@@ -5,7 +5,7 @@ spring:
     gateway:
       routes:
         - id: product-service
-          uri: http://product-service:8081
+          uri: http://product-service:8083
           predicates:
             - Path=/api/products/**
         - id: people-service
@@ -16,6 +16,24 @@ spring:
           uri: http://inventory-service:8083
           predicates:
             - Path=/api/inventory/**
+        - id: product-service-openapi
+          uri: http://product-service:8083
+          predicates:
+            - Path=/openapi/product-service/**
+          filters:
+            - StripPrefix=2
+        - id: people-service-openapi
+          uri: http://people-service:8082
+          predicates:
+            - Path=/openapi/people-service/**
+          filters:
+            - StripPrefix=2
+        - id: inventory-service-openapi
+          uri: http://inventory-service:8083
+          predicates:
+            - Path=/openapi/inventory-service/**
+          filters:
+            - StripPrefix=2
 
 server:
   port: 8080

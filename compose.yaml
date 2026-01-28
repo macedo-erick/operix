@@ -55,7 +55,6 @@ services:
       start_period: 15s
     networks:
       - operix-network
-    restart: unless-stopped
 
   postgres:
     image: postgres:16
@@ -92,7 +91,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
   config-server:
     build:
@@ -110,7 +108,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
   api-gateway:
     build:
@@ -122,12 +119,8 @@ services:
     environment:
       SERVER_PORT: 8080
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
-      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
       - "8080:8080"
-    volumes:
-      - ./api-gateway/src:/app/src
-      - ./api-gateway/build/classes:/app/build/classes
     depends_on:
       config-server:
         condition: service_healthy
@@ -138,7 +131,6 @@ services:
       retries: 5
     networks:
       - operix-network
-    restart: unless-stopped
 
   inventory-service:
     build:
@@ -154,12 +146,8 @@ services:
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
       - "8081:8081"
-    volumes:
-      - ./inventory-service/src:/app/src
-      - ./inventory-service/build/classes:/app/build/classes
     depends_on:
       config-server:
         condition: service_healthy
@@ -174,7 +162,6 @@ services:
       retries: 5
     networks:
       - operix-network
-    restart: unless-stopped
 
   people-service:
     build:
@@ -190,12 +177,8 @@ services:
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
       - "8082:8082"
-    volumes:
-      - ./people-service/src:/app/src
-      - ./people-service/build/classes:/app/build/classes
     depends_on:
       config-server:
         condition: service_healthy
@@ -210,7 +193,6 @@ services:
       retries: 5
     networks:
       - operix-network
-    restart: unless-stopped
 
   product-service:
     build:
@@ -226,12 +208,8 @@ services:
       SPRING_DATASOURCE_USERNAME: operix_user
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_DEVTOOLS_RESTART_ENABLED: "true"
     ports:
       - "8083:8083"
-    volumes:
-      - ./product-service/src:/app/src
-      - ./product-service/build/classes:/app/build/classes
     depends_on:
       config-server:
         condition: service_healthy
@@ -240,13 +218,12 @@ services:
       kafka:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - operix-network
-    restart: unless-stopped
 
 networks:
   operix-network:

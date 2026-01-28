@@ -1,0 +1,23 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    use-root-path: true
+    urls:
+      - name: product-service
+        url: /openapi/product-service/v3/api-docs
+      - name: people-service
+        url: /openapi/people-service/v3/api-docs
+      - name: inventory-service
+        url: /openapi/inventory-service/v3/api-docs
+  api-docs:
+    path: /v3/api-docs
+  enable-spring-security: false
+  spring-cloud:
+    enabled: true

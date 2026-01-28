@@ -88,6 +88,8 @@ services:
       - "8761:8761"
     volumes:
       - ./service-registry/src:/app/src
+      - ./service-registry/build/classes:/app/build/classes
+      - ./service-registry/build/resources:/app/build/resources
     networks:
       - operix-network
     healthcheck:
@@ -109,6 +111,8 @@ services:
       - "8888:8888"
     volumes:
       - ./config-server/src:/app/src
+      - ./config-server/build/classes:/app/build/classes
+      - ./config-server/build/resources:/app/build/resources
     networks:
       - operix-network
     healthcheck:
@@ -128,10 +132,13 @@ services:
       SERVER_PORT: 8080
       SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8080:8080"
     volumes:
       - ./api-gateway/src:/app/src
+      - ./api-gateway/build/classes:/app/build/classes
+      - ./api-gateway/build/resources:/app/build/resources
     depends_on:
       config-server:
         condition: service_healthy
@@ -159,10 +166,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8081:8081"
     volumes:
       - ./inventory-service/src:/app/src
+      - ./inventory-service/build/classes:/app/build/classes
+      - ./inventory-service/build/resources:/app/build/resources
     depends_on:
       config-server:
         condition: service_healthy
@@ -194,10 +204,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8082:8082"
     volumes:
       - ./people-service/src:/app/src
+      - ./people-service/build/classes:/app/build/classes
+      - ./people-service/build/resources:/app/build/resources
     depends_on:
       config-server:
         condition: service_healthy
@@ -229,10 +242,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: secret
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SPRING_DEVTOOLS_RESTART_ENABLED: "true"
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8083:8083"
     volumes:
       - ./product-service/src:/app/src
+      - ./product-service/build/classes:/app/build/classes
+      - ./product-service/build/resources:/app/build/resources
     depends_on:
       config-server:
         condition: service_healthy

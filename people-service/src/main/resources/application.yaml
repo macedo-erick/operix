@@ -3,22 +3,3 @@ spring:
     name: people-service
   config:
     import: "optional:configserver:http://localhost:8888"
-  devtools:
-    restart:
-      enabled: true
-    livereload:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-
-springdoc:
-  swagger-ui:
-    enabled: true
-  api-docs:
-    path: /v3/api-docs
-
